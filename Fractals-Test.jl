@@ -1,7 +1,7 @@
 using .Fractals
 using Test
 
-@testset
+@testset "This is a test" begin
 
     @test 1==1
 
