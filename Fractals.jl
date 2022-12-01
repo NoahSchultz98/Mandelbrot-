@@ -45,7 +45,7 @@ This is a helpful comment
 ```
 function leavingNumber(i::Integer = 100, inital::Complex = 0 + 0im)
     
-    f 
+    f
     
     iterateFunction()
     
