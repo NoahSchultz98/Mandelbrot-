@@ -2,7 +2,7 @@ module Fractals
 
 import Base: show#, iterate
 
-export FractalView, iterate, leavingNumber, inMandelbrot
+export FractalView, iterateFunction, leavingNumber, inMandelbrot
 
 # has a max and min coplex number, and integers for dimensions 
 ```
@@ -15,6 +15,7 @@ struct FractalView
     # width and height in pixels, (resolution?)
     width::Integer
     height::Integer
+    #add test to make sure that width and height are positive in constructors
 end
 
 #iterate ( function, inital point, number of increments)
@@ -22,6 +23,17 @@ end
 This is a helpful comment
 ```
 function iterateFunction(f::Function, initial::Complex, i::Integer)
+    
+    v = zeros(Complex, i+1)
+    
+    v[1] = initial 
+    
+    for j in 2:(i+1)
+        v[j] = f(inital)
+        initial = v[j]
+    end
+    
+    return v
     
 end
 
@@ -32,10 +44,10 @@ end
 This is a helpful comment
 ```
 function leavingNumber(i::Integer = 100, inital::Complex = 0 + 0im)
-    if (initial += 0 + 1im) < 2
-        # recursive? 
-        leavingNumber(i-=1, inital)
-    end
+    
+    f 
+    
+    iterateFunction()
     
 end
 
