@@ -42,7 +42,7 @@ end
 #leavingNumber ( how many iterations until number is more than 2 -> goes to infinity )
 
 """
-
+This function takes a complex number and returns the number of iterations. 
 """
 function leavingNumber(i::Integer = 100, inital::Complex = 0 + 0im)
     
@@ -55,7 +55,7 @@ end
 
 #inMandelbrot ( iterate number a ton, and if not more than 2, then it is bounded )
 """
-This is a helpful comment
+This function takes a complex number and returns true or false based on if the number input is in the Mandelbrot set or not.
 """
 function inMandelbrot(c::Complex, j::Integer = 100)
     #j = 100
