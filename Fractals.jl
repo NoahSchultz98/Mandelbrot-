@@ -30,12 +30,11 @@ function iterateFunction(f::Function, initial::Complex, i::Integer)
     v[1] = initial 
     
     for j in 2:(i+1)
-        v[j] = f(inital)
+        v[j] = f(initial)
         initial = v[j]
     end
     
     return v
-
     
 end
 
@@ -44,12 +43,23 @@ end
 """
 This function takes a complex number and returns the number of iterations. 
 """
-function leavingNumber(i::Integer = 100, inital::Complex = 0 + 0im)
+function leavingNumber(i::Integer = 100, initial::Complex = 0 + 0im)
     
-    f
+    f(x) = (x^2) + im
     
-    iterateFunction()
-
+    v = iterateFunction(f, initial, i)# use abs() to see if its bigger than 2
+    
+    for j in 1:i
+        if abs(v[j]) > 2
+           break
+        end
+    end
+    
+    if j == i 
+        return true #the number of iterations that it takes to leave 2
+    else
+       return j
+    end
     
 end
 
