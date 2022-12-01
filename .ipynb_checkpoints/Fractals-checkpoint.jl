@@ -16,6 +16,10 @@ struct FractalView
     width::Integer
     height::Integer
     #add test to make sure that width and height are positive in constructors
+    FractalView() = new(0im,2im, 800,600)
+    FractalView(min::Complex,max::Complex) = new(min,max,800,600)
+    FractalView(min::Complex,max::Complex, width::Integer, height::Integer) = width > 0 && height > 0 ? new(min,max,width, height) : throw(ArgumentError("The size of the window must be a positive Integer"))
+    
 end
 
 #<<<<<<< FractalsTestBranch
@@ -49,18 +53,13 @@ function leavingNumber(i::Integer = 100, initial::Complex = 0 + 0im)
     
     v = iterateFunction(f, initial, i)# use abs() to see if its bigger than 2
     
-    for j in 1:i
-        if abs(v[j]) > 2
-           break
-        end
+    z = 1
+    
+    while abs(v[z]) < 2 && z < length(v)
+        z+=1
     end
     
-    if j == i 
-        return true #the number of iterations that it takes to leave 2
-    else
-       return j
-    end
-    
+    z
 end
 
 #inMandelbrot ( iterate number a ton, and if not more than 2, then it is bounded )
@@ -68,19 +67,14 @@ end
 This function takes a complex number and returns true or false based on if the number input is in the Mandelbrot set or not.
 """
 function inMandelbrot(c::Complex, j::Integer = 100)
-    #j = 100
-
-
-    #for i in 1:j
-       #if iterate(c) > 2
-            #print( "Leaves the Mandelbrot set after ", i, " iterations" )
-            #return false
-        #end
-    #end
     
-    leavingNumber(j, c)
+    z = leavingNumber(j, c)
     
-    #return true
+    if z == (j+1)
+        return true
+    end
+    false
+
 end
 
 end
