@@ -1,4 +1,8 @@
 using .Fractals
 using Test
 
-@test 1==1
+@testset
+
+    @test 1==1
+
+end
