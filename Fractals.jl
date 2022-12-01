@@ -1,5 +1,9 @@
 module Fractals
 
+import Base.show
+
+export FractalView, iterate, leavingNumber, inMandelbrot
+
 struct FractalView
     # min and max of fractals
     min::Complex
