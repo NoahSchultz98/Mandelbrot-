@@ -7,6 +7,11 @@ export FractalView, iterateFunction, leavingNumber, inMandelbrot
 
 """
 The Fractal View contains the min and max of the plot of the Mandelbrot Set. 
+
+Constructors:
+defualt
+two complex numbers
+two complex numbers, two integers for width and height
 """
 struct FractalView
     # min and max of fractals
@@ -26,6 +31,8 @@ end
 #iterate ( increment by c )
 """
 This is the iterate function that takes a compelx function and iterates it a certain number of times.
+
+returns a vector of complex numbers for each iteration including the initial
 """
 function iterateFunction(f::Function, initial::Complex, i::Integer)
     
@@ -46,6 +53,8 @@ end
 
 """
 This function takes a complex number and returns the number of iterations. 
+
+if the number does not leave than it returns the input iterations + 1
 """
 function leavingNumber(i::Integer = 100, initial::Complex = 0 + 0im)
     
