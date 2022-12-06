@@ -61,17 +61,17 @@ This function takes a complex number and returns the number of iterations.
 
 if the number does not leave than it returns the input iterations + 1
 """
-function leavingNumber(initial::Complex = 0 + 0im, i::Integer = 100)
+function leavingNumber(c::Complex,initial::Complex = 0 + 0im, i::Integer = 100)
     # i is the maximum times we will iterate the function
     
     if i < 1
         throw(ArgumentError("The maximum number of iterations must be positive"))
     end
     
-    f(x) = (x^2) + initial
+    f(x) = (x^2) + c
     # function of mandlebrot??? I am not confident that this is the function we should be using
     
-    v = iterateFunction(f, initial, i)
+    v = iterateFunction(f, c, i)
     # use the iterateFunction meathod to get a vector of complex numbers where each element is 
     # the complex function increment of the last
     
