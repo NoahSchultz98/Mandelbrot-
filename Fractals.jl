@@ -1,6 +1,6 @@
 module Fractals
 
-export FractalView, iterateFunction, leavingNumber, inMandelbrot
+export FractalView, iterateFunction, leavingNumber, inMandelbrot, mandelbrotViewer
 
 """
 The Fractal View contains the min and max of the plot of the Mandelbrot Set. 
@@ -18,14 +18,39 @@ struct FractalView
     width::Integer
     height::Integer
     #add test to make sure that width and height are positive in constructors
-    FractalView() = new(0im,2im, 800,600)
+    FractalView() = new(0im,2+2im, 800,600)
     # defualt constuctor takes no arguments
-    FractalView(min::Complex,max::Complex) = new(min,max,800,600)
+    FractalView(min::Complex,max::Complex) = real(min) < real(max) && img(min) < img(max) ? new(min,max,800,600) : throw(ArgumentError("The mininum complex number must be smaller than the maximun"))
     # takes the max and min as arugments, default dimensions
-    FractalView(min::Complex,max::Complex, width::Integer, height::Integer) = width > 0 && height > 0 ? new(min,max,width, height) : throw(ArgumentError("The size of the window must be a positive Integer larger than 0"))
+    #FractalView(min::Complex,max::Complex, width::Integer, height::Integer) = width > 0 && height > 0 ? new(min,max,width, height) : throw(ArgumentError("The size of the window must be a positive Integer larger than 0"))
+    function FractalView(min::Complex,max::Complex, width::Integer, height::Integer)
+        if !(real(min) < real(max) && img(min) < img(max))
+            throw(ArgumentError("The mininum complex number must be smaller than the maximun"))
+        elseif !(width > 0 && height > 0)
+            throw(ArgumentError("The size of the window must be a positive Integer larger than 0"))
+        else
+            new(min,max,width, height)
+        end
+    end
     # throws argument error if the width or height is negative
+        
+end
+
+function mandelbrotViewer(fractal::FractalView)
+    
+    #v = LinRange(fractal.min, fractal.max, 100)
+    
+    fractal.height
+    fractal.width 
+    
+    # comprehension 
+    m = [fractal]
+    
+    map(x->leavingNumber(x), v)
+    
     
 end
+    
 
 """
 This is the iterate function that takes a compelx function and iterates it a certain number of times.
@@ -61,7 +86,7 @@ This function takes a complex number and returns the number of iterations.
 
 if the number does not leave than it returns the input iterations + 1
 """
-function leavingNumber(c::Complex,initial::Complex = 0 + 0im, i::Integer = 100)
+function leavingNumber(c::Complex, initial::Complex = 0 + 0im, i::Integer = 100)
     # i is the maximum times we will iterate the function
     
     if i < 1
@@ -71,7 +96,7 @@ function leavingNumber(c::Complex,initial::Complex = 0 + 0im, i::Integer = 100)
     f(x) = (x^2) + c
     # function of mandlebrot??? I am not confident that this is the function we should be using
     
-    v = iterateFunction(f, c, i)
+    v = iterateFunction(f, initial, i)
     # use the iterateFunction meathod to get a vector of complex numbers where each element is 
     # the complex function increment of the last
     
