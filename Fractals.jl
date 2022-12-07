@@ -1,5 +1,7 @@
 module Fractals
 
+using Plots
+
 export FractalView, iterateFunction, leavingNumber, inMandelbrot, mandelbrotViewer
 
 """
@@ -20,11 +22,11 @@ struct FractalView
     #add test to make sure that width and height are positive in constructors
     FractalView() = new(0im,2+2im, 800,600)
     # defualt constuctor takes no arguments
-    FractalView(min::Complex,max::Complex) = real(min) < real(max) && img(min) < img(max) ? new(min,max,800,600) : throw(ArgumentError("The mininum complex number must be smaller than the maximun"))
+    FractalView(min::Complex,max::Complex) = real(min) < real(max) && imag(min) < imag(max) ? new(min,max,800,600) : throw(ArgumentError("The mininum complex number must be smaller than the maximun"))
     # takes the max and min as arugments, default dimensions
     #FractalView(min::Complex,max::Complex, width::Integer, height::Integer) = width > 0 && height > 0 ? new(min,max,width, height) : throw(ArgumentError("The size of the window must be a positive Integer larger than 0"))
     function FractalView(min::Complex,max::Complex, width::Integer, height::Integer)
-        if !(real(min) < real(max) && img(min) < img(max))
+        if !(real(min) < real(max) && imag(min) < imag(max))
             throw(ArgumentError("The mininum complex number must be smaller than the maximun"))
         elseif !(width > 0 && height > 0)
             throw(ArgumentError("The size of the window must be a positive Integer larger than 0"))
@@ -38,16 +40,21 @@ end
 
 function mandelbrotViewer(fractal::FractalView)
     
-    #v = LinRange(fractal.min, fractal.max, 100)
+    m = zeros(Complex,  fractal.height, fractal.width)
+
+    xVector = LinRange(real(fractal.min), real(fractal.max), fractal.width)
+    yVector = reverse(LinRange(imag(fractal.min), imag(fractal.max), fractal.height))
+
+    for x in 1:fractal.width
+        for y in 1:fractal.height
+            #print("(", xVector[x],", " ,yVector[y], "im), ")
+            m[y,x] = complex(xVector[x], yVector[y])#xVector[x] + yVector[y]
+        end
+    end
     
-    fractal.height
-    fractal.width 
+    #map(x->leavingNumber(x), m)
     
-    # comprehension 
-    m = [fractal]
-    
-    map(x->leavingNumber(x), v)
-    
+    heatmap(1:fractal.width, 1:fractal.height, map(x->leavingNumber(x), m))
     
 end
     
