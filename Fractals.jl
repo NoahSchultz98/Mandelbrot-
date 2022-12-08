@@ -12,9 +12,12 @@ defualt
 two complex numbers
 two complex numbers, two integers for width and height
 
-# example
-FractalView()
-FractalView(1+im )
+#Example: 
+
+```julia-repl
+julia> FractalView(0+4im,5+5im)
+FractalView(0+4im,5+5im,800,600)
+```
 """
 struct FractalView
     # min and max of fractals
@@ -40,26 +43,11 @@ struct FractalView
     end
     # throws argument error if the width or height is negative
         
-end
+en
 
-function juliaSetViewer(c::Complex, fractal::FractalView)
-    m = zeros(Complex,  fractal.height, fractal.width)
-
-    xVector = LinRange(real(fractal.min), real(fractal.max), fractal.width)
-    yVector = reverse(LinRange(imag(fractal.min), imag(fractal.max), fractal.height))
-
-    for x in 1:fractal.width
-        for y in 1:fractal.height
-            #print("(", xVector[x],", " ,yVector[y], "im), ")
-            m[y,x] = complex(xVector[x], yVector[y])#xVector[x] + yVector[y]
-        end
-    end
-    
-    #map(x->leavingNumber(x), m)
-    
-    heatmap(1:fractal.width, 1:fractal.height, map(x->leavingNumber(x,c,20), m), aspect_ratio = ":equal")
-end
-
+"""
+The mandelbrotviewer function creates a plot of the fractalview struct. 
+"""
 function mandelbrotViewer(fractal::FractalView)
     
     m = zeros(Complex,  fractal.height, fractal.width)
