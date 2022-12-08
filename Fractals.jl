@@ -11,6 +11,13 @@ Constructors:
 defualt
 two complex numbers
 two complex numbers, two integers for width and height
+
+#Example: 
+
+```julia-repl
+julia> FractalView(0+4im,5+5im)
+FractalView(0+4im,5+5im,800,600)
+```
 """
 struct FractalView
     # min and max of fractals
@@ -36,8 +43,11 @@ struct FractalView
     end
     # throws argument error if the width or height is negative
         
-end
+en
 
+"""
+The mandelbrotviewer function creates a plot of the fractalview struct. 
+"""
 function mandelbrotViewer(fractal::FractalView)
     
     m = zeros(Complex,  fractal.height, fractal.width)
