@@ -2,7 +2,10 @@ module Fractals
 
 using Plots
 
-export FractalView, iterateFunction, leavingNumber, inMandelbrot, mandelbrotViewer
+export FractalView, iterateFunction, leavingNumber, inMandelbrot, mandelbrotViewer, juliaSetViewer
+
+#myGradient = cgrad(:roma, 10, categorical = true, scale = :exp)
+
 
 """
 The Fractal View contains the min and max of the plot of the Mandelbrot Set. 
@@ -12,7 +15,7 @@ defualt
 two complex numbers
 two complex numbers, two integers for width and height
 
-#Example: 
+# Example: 
 
 ```julia-repl
 julia> FractalView(0+4im,5+5im)
@@ -26,10 +29,11 @@ struct FractalView
     # width and height in pixels, (resolution?)
     width::Integer
     height::Integer
+    fixed::Integer
     #add test to make sure that width and height are positive in constructors
-    FractalView() = new(0im,2+2im, 800,600)
+    FractalView() = new(0im,2+2im, 800,600, 0)
     # defualt constuctor takes no arguments
-    FractalView(min::Complex,max::Complex) = real(min) < real(max) && imag(min) < imag(max) ? new(min,max,800,600) : throw(ArgumentError("The mininum complex number must be smaller than the maximun"))
+    FractalView(min::Complex,max::Complex) = real(min) < real(max) && imag(min) < imag(max) ? new(min,max,800,600, 0) : throw(ArgumentError("The mininum complex number must be smaller than the maximun"))
     # takes the max and min as arugments, default dimensions
     #FractalView(min::Complex,max::Complex, width::Integer, height::Integer) = width > 0 && height > 0 ? new(min,max,width, height) : throw(ArgumentError("The size of the window must be a positive Integer larger than 0"))
     function FractalView(min::Complex,max::Complex, width::Integer, height::Integer)
@@ -38,17 +42,60 @@ struct FractalView
         elseif !(width > 0 && height > 0)
             throw(ArgumentError("The size of the window must be a positive Integer larger than 0"))
         else
-            new(min,max,width, height)
+            new(min,max,width, height, 0)
         end
     end
     # throws argument error if the width or height is negative
         
-en
+end
 
 """
 The mandelbrotviewer function creates a plot of the fractalview struct. 
+
+# Example: 
+
+```julia-repl
+julia> fractal = FractalView(0+4im,5+5im)
+FractalView(0+4im,5+5im,800,600)
+julia>mandelbrotViewer(fractal)
+```
 """
 function mandelbrotViewer(fractal::FractalView)
+    
+    # this changes the height to associate it to the raio of the complex numbers 
+        FH = Int64(floor(fractal.height * (imag(fractal.max)-imag(fractal.min))))
+        FW = Int64(floor(fractal.width * (real(fractal.max)-real(fractal.min))))
+        #fractal.fixed = 1
+    
+    
+    m = zeros(Complex, FH, FW)
+
+    xVector = LinRange(real(fractal.min), real(fractal.max), FW)
+    yVector = reverse(LinRange(imag(fractal.min), imag(fractal.max), FH))
+
+    for x in 1:FW
+        for y in 1:FH
+            m[y,x] = complex(xVector[x], yVector[y])
+        end
+    end
+    
+    heatmap(1:FW, 1:FH, map(x->leavingNumber(x,0+0im,50), m), aspect_ratio = :equal, seriescolor = :algae)
+    
+end
+
+"""
+The function creates a plot of the fractalview struct using the inital complex number as the origin. 
+
+# Example: 
+
+```julia-repl
+julia> fractal = FractalView(0+4im,5+5im)
+FractalView(0+4im,5+5im,800,600)
+julia>juliaSetViewer(fractal, 0.1+0.1im)
+```
+"""
+function juliaSetViewer(fractal::FractalView, c::Complex)
+
     
     m = zeros(Complex,  fractal.height, fractal.width)
 
@@ -64,7 +111,7 @@ function mandelbrotViewer(fractal::FractalView)
     
     #map(x->leavingNumber(x), m)
     
-    heatmap(1:fractal.width, 1:fractal.height, map(x->leavingNumber(x,0+0im,20), m), aspect_ratio = :equal)
+    heatmap(1:fractal.width, 1:fractal.height, map(x->leavingNumber(x,c,30), m), aspect_ratio = :equal, seriescolor = :algae)
     
 end
     
@@ -73,6 +120,12 @@ end
 This is the iterate function that takes a compelx function and iterates it a certain number of times.
 
 returns a vector of complex numbers for each iteration including the initial
+
+# Example: 
+
+```julia-repl
+julia> iterateFunction(f(x) = x^2 + im, 1+1im, 10)
+```
 """
 function iterateFunction(f::Function, initial::Complex, i::Integer)
     # i is the number of times we will iterate this function
@@ -102,6 +155,12 @@ end
 This function takes a complex number and returns the number of iterations. 
 
 if the number does not leave than it returns the input iterations + 1
+
+# Example: 
+
+```julia-repl
+julia> leavingNumber(0.1+0.1im, 0+0im, 30)
+```
 """
 function leavingNumber(c::Complex, initial::Complex = 0 + 0im, i::Integer = 100)
     # i is the maximum times we will iterate the function
@@ -131,6 +190,12 @@ end
 
 """
 This function takes a complex number and returns true or false based on if the number input is in the Mandelbrot set or not.
+
+# Example: 
+
+```julia-repl
+julia> inMandelbrot(0.1+0.1im, 30)
+```
 """
 function inMandelbrot(c::Complex, j::Integer = 100)
     # in this function j is the number of iterations to find if the number is larger than 2
@@ -139,7 +204,7 @@ function inMandelbrot(c::Complex, j::Integer = 100)
         throw(ArgumentError("The maximum number of iterations must be positive"))
     end    
     
-    z = leavingNumber(c, j)  # call the function we made to get the index of the leaving number
+    z = leavingNumber(c, 0+0im, j)  # call the function we made to get the index of the leaving number
     
     # as stated before, if z is equal to the size of the vector then we did not find a leavingNumber
     # if we did not find a leaving number, then this complex number is in the mandlebrot set

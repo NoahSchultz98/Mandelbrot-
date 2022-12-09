@@ -4,11 +4,12 @@ using Test
 @testset "Constructor Test FractalView" begin
 
     @test isa(FractalView(), FractalView)
-    @test isa(FractalView(0im, 1im), FractalView)
-    @test isa(FractalView(0im, 1im, 1920, 1080), FractalView)
+    @test isa(FractalView(0im, 0.1+1im, 1920, 1080), FractalView)
     
     @test_throws ArgumentError FractalView(0im, 1im, -100, 300)
     @test_throws ArgumentError FractalView(0im, 1im, 300, -100)
+    @test_throws ArgumentError FractalView(0im, 1im)
+
 
 end
 
@@ -28,17 +29,18 @@ v = iterateFunction(f, 0im, 5)
 end
 
 max_num = 1000
+init = 0+0im
 stays = max_num + 1
 
 @testset "leavingNumber tests" begin
     
-    @test_throws ArgumentError leavingNumber(-1im, -max_num)
+    @test_throws ArgumentError leavingNumber(-1im,init, -max_num)
 
-    @test leavingNumber(-1im, max_num) == stays
-    @test leavingNumber(-1.01im, max_num) != stays
-    @test leavingNumber(.4+0im, max_num) != stays
-    @test leavingNumber(-.5+.5im, max_num) == stays
-    @test leavingNumber(2im, max_num) != stays
+    @test leavingNumber(-1im, init, max_num) == stays
+    @test leavingNumber(-1.01im, init, max_num) != stays
+    @test leavingNumber(.4+0im, init, max_num) != stays
+    @test leavingNumber(-.5+.5im, init, max_num) == stays
+    @test leavingNumber(2im, init, max_num) != stays
 
 end
 
